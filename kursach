@@ -30,7 +30,6 @@ double elapsed;
 
 static pixel_t* pixel_at(bitmap_t* bitmap, int x, int y)
 {
-    //printf("bitmap->width = %d, y = %d, x = %d, (bitmap->width * y + x) = %d\n", bitmap->width, y, x, bitmap->width * y + x);
     return bitmap->pixels + bitmap->width * y + x;
 }
 
@@ -120,55 +119,58 @@ fopen_failed:
 // Paint pixels with black with set X, Y coordinates
 void set_pixel (bitmap_t* fruit, int x, int y, int r, int g, int b)
 {
-    /*pixel_t * pixel = pixel_at(fruit, fruit->height - 1, fruit->width - 1);
-    pixel->red = r;
-    pixel->green = g;
-    pixel->blue = b;
-    pixel->alpha = 255;*/
-
-    //printf("x = %d, y = %d\n", x,y);
-
     y = y * size;
     x = x * size;
 
-  /*  pixel_t* pixel = pixel_at(fruit, x);
-    pixel->red = r;
-    pixel->green = g;
-    pixel->blue = b;
-    pixel->alpha = 255;*/
-
     // Paint columns with accordance received coordinates
-    int s = fruit->height - x;
+    int s = x - 1;
 
     if (size > 1) {
-        for (int j = size; j >= 1; j--) {            
-            for (int i = y; i >= 1; i--) {                
+        for (int p = x - size; p < x; p++) {
+            
+            for (int i = y - 1; i >= 0; i--) {
 
-                int n = s - j;
-                if (n > 250)
-                    n = 250;
+                for (int j = size; j >= 1; j--) {
+                    
+                    pixel_t* pixel = pixel_at(fruit, p, i);
+                    pixel->red = r;
+                    pixel->green = g;
+                    pixel->blue = b;
+                    pixel->alpha = 255;
+                }
 
-                int m = i + j;
-                if (m > 250)
-                    m = 250;
-
-                pixel_t* pixel = pixel_at(fruit, n, m);
-                pixel->red = r;
-                pixel->green = g;
-                pixel->blue = b;
-                pixel->alpha = 255;
+                if (i < y - size - 1) {
+                    r = 180;
+                    g = 180;
+                    b = 180;
+                }
+                else {
+                    r = 0;
+                    g = 0;
+                    b = 0;
+                }
             }
         }
     }
     else{
-        for (int i = y; i >= 1; i--) {
-            int s = fruit->height - x;
+        char isPointPainted = 0;
+
+        for (int i = y - 1; i >= 0; i--) {
 
             pixel_t* pixel = pixel_at(fruit, s, i);
             pixel->red = r;
             pixel->green = g;
             pixel->blue = b;
             pixel->alpha = 255;
+
+            if (isPointPainted = 0)
+                isPointPainted = 1;
+
+            if (isPointPainted = 1) {
+                r = 180;
+                g = 180;
+                b = 180;
+            }
         }
     }
 }
@@ -238,7 +240,6 @@ void shell_sort (int* a, int n){
             for (j = i; j >= h && t < a[j - h]; j -= h) {
                 amount_of_comparison++;
 
-                /*print(a, n);*/
                 create_image(a, n, ++counter);
 
                 amount_of_swap++;
@@ -278,8 +279,6 @@ int sort(int numbers)
         return 0;
     }
 
-    //numbers = numbers * size;
-
     int memory_needed = numbers * sizeof(int);
     a = (int*)malloc(memory_needed);
 
@@ -303,11 +302,10 @@ int sort(int numbers)
     return 0;
 }
 
-
 int main(int argc, char* argv[])
 {
     printf("%s\n", "Programm for Shell sort visualization");
-    
+
     if (argc <= 1) {
         print_help_menu();
         return 0;
@@ -338,7 +336,6 @@ int main(int argc, char* argv[])
 
     // If only one parameter has been received
     if (argc == 3) {
-        /*char* parameter = argv[1];*/
 
         puts("Parameters received:");
 
@@ -385,14 +382,12 @@ int main(int argc, char* argv[])
             if (strcmp(argv[i], "-n") == 0 || strcmp(argv[i], "--numbers") == 0) {
                 puts("Number");
                 numbers = atoi(argv[i + 1]);
-                // sort(numbers);
             }
 
             // Box size of each value (in pixel)
             if (strcmp(argv[i], "-s") == 0 || strcmp(argv[i], "--size") == 0) {
                 puts("Size");
                 size = atoi(argv[i + 1]);
-                // sort(numbers);
             }
 
             // Path to directory for saving
@@ -402,10 +397,6 @@ int main(int argc, char* argv[])
 
                 if (path != 0) {
                     strcpy(path, argv[i + 1]);
-
-                    //sort(numbers);
-
-                    //free(path);
                 }
             }
 
@@ -414,10 +405,6 @@ int main(int argc, char* argv[])
                 puts("Complexity");
 
                 isPrintComplexity = 1;
-
-                // sort(numbers);
-
-                // isPrintComplexity = 0;
             }
         }
 
